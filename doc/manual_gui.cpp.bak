@@ -1,0 +1,88 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+// Custom
+#include <apbattle/socket_client.h>
+#include <apbattle/battleship_gui.h>
+
+int main(int argc, char *argv[])
+{
+
+
+
+	int display_size = 400;
+	int N = 10;
+	int cellSize = display_size / N;
+
+
+	std::vector<std::vector<int>> hit_map(N, std::vector<int>(N, 0));
+
+	sf::RenderWindow window(sf::VideoMode(display_size, display_size), "Battleship");
+	
+
+
+	sf::VertexArray vArray(sf::Quads, 4 * N * N);
+
+	sf::Event event;
+	while (window.isOpen() )
+	{
+
+
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N ; j++)
+			{
+				
+				sf::Vertex* quad = &vArray[(i + j * N) * 4];
+				quad[0].position = sf::Vector2f(i * cellSize, j * cellSize);
+				quad[1].position = sf::Vector2f((i + 1) * cellSize, j * cellSize);
+				quad[2].position = sf::Vector2f((i + 1) * cellSize, (j + 1) * cellSize);
+				quad[3].position = sf::Vector2f((i) * cellSize, (j + 1) * cellSize);
+				
+				sf::Color cellColor;
+				if (hit_map[i][j] == -1) { cellColor = sf::Color::White;}
+				if (hit_map[i][j] == 1 ) { cellColor = sf::Color::Red;}
+				if (hit_map[i][j] == 0 ) { cellColor = sf::Color::Blue;}
+
+				quad[0].color = sf::Color::Black; // hack so borders are more easily seen
+				quad[1].color = cellColor;
+				quad[2].color = cellColor;
+				quad[3].color = cellColor;
+			}
+		}
+		window.clear();
+		window.draw(vArray);
+		window.display();
+
+
+
+		while (window.pollEvent(event))
+		{
+			switch (event.type)
+			{
+			case sf::Event::Closed:
+				window.close();
+				return 0;
+
+			case sf::Event::MouseButtonPressed:
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					std::cout << "left mouse pressed on ("
+					          << event.mouseButton.x << " , "
+					          << event.mouseButton.y << ")\n";
+
+					int row = event.mouseButton.x / cellSize;
+					int col = event.mouseButton.y / cellSize;
+					hit_map[row][col] = -1;
+				}
+
+			default:
+				break;
+			}
+
+		}
+
+	}
+
+}
