@@ -4,51 +4,10 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <apbattle/bship_common.h>
 
 namespace bship{
 
-	enum Direction{
-		Down,
-		Right
-	};
-
-	enum ShipName{
-		Carrier,
-		Battleship,
-		Cruiser,
-		Submarine,
-		Destroyer
-	};
-
-	const std::map<ShipName, int> shipLengthMap{
-		{Carrier, 5},
-		{Battleship, 4},
-		{Cruiser, 3},
-		{Submarine, 3}, 
-		{Destroyer, 2},
-	};
-
-
-	struct Ship{
-		ShipName name;
-		int row;
-		int col;
-		Direction direction;
-
-		void setPos(int r, int c, Direction dir)
-		{
-			row = r;
-			col = c;
-			direction = dir;
-		}
-
-		void setAll(ShipName n, int r, int c, Direction dir)
-		{
-			name = n;
-			setPos(r, c, dir);
-		}
-
-	}; // struct Ship
 
 	class BattleBoard {
 	public:
@@ -65,7 +24,7 @@ namespace bship{
 		/**
 		 * @brief Checks player's map for HitStatus and sinking status
 		 */
-		bool checkGridLocation(HitStatus& status, bool& didSinkShip, ShipName& shipName);
+		bool checkGridLocation(int row, int col, HitStatus& status, bool& didSinkShip, ShipName& shipName);
 
 		void getEnemyMap(std::vector<std::vector<int>>& map){map = enemy_map_;};
 		void getPlayerMap(std::vector<std::vector<int>>& map){map = player_map_;};
@@ -81,10 +40,24 @@ namespace bship{
 		 */
 		void generateRandomShips();
 
+		/**
+		 * @brief helper to print details for debugging
+		 */
+		void printShipDetails(const Ship& ship);
+
+		/**
+		 * @brief places specified ship onto the hit_map 
+		 */
+		void placeShip(const Ship& ship, std::vector<std::vector<int>>& map, int shipIndex);
+
+		void consolePrintBoard(const std::vector<std::vector<int>>& map);
+
+		bool checkIfSunk(Ship& ship);
 
 		std::vector<Ship> ships_;
 		std::vector<std::vector<int>> enemy_map_;
 		std::vector<std::vector<int>> player_map_;
+		std::map<int, int> reverseIndexLookup_;
 
 
 	}; // class

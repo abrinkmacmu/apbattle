@@ -3,14 +3,11 @@
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <apbattle/bship_common.h>
 
 namespace bship {
 
-enum HitStatus {
-	Unknown,
-	Hit,
-	Miss
-};
+
 
 /**
  * @brief GUI manager, has interactive component for manual modes

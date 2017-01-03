@@ -33,7 +33,7 @@ target_link_libraries(dummy_client ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_executable(test_socket src/test/test_socket.cpp)
 target_link_libraries(test_socket ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(manual_gui src/manual_gui.cpp src/battleship_gui.cpp)
+add_executable(manual_gui src/manual_gui.cpp src/battleship_gui.cpp src/battle_board.cpp)
 target_link_libraries(manual_gui ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${SFML_LIBRARIES})
 
 

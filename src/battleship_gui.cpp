@@ -1,4 +1,5 @@
 #include <apbattle/battleship_gui.h>
+#include <apbattle/bship_common.h>
 #include <iostream>
 
 bship::BattleshipGui::BattleshipGui():
