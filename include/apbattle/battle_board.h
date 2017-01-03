@@ -29,6 +29,8 @@ namespace bship{
 		void getEnemyMap(std::vector<std::vector<int>>& map){map = enemy_map_;};
 		void getPlayerMap(std::vector<std::vector<int>>& map){map = player_map_;};
 
+		std::vector<Ship> getShipLocations(){return ships_;};
+
 	private:
 		/**
 		 * @brief self-explainatory
