@@ -28,7 +28,8 @@ int main()
   {
     boost::asio::io_service io_service;
 
-    tcp::endpoint end_point(boost::asio::ip::address_v4(0x7F000001), 8080); //127.0.0.1
+    //tcp::endpoint end_point(boost::asio::ip::address_v4(0x7F000001), 8080); //127.0.0.1
+    tcp::endpoint end_point(boost::asio::ip::address_v4(0xC0A80106), 8080); //192.168.1.6
 
     tcp::acceptor acceptor(io_service, end_point);
 

@@ -15,7 +15,7 @@ struct Client
         boost::asio::ip::tcp::resolver resolver(io_service);
         boost::asio::ip::tcp::resolver::query query(host, port);
         boost::asio::ip::tcp::resolver::iterator endpoint = resolver.resolve(query);
-        
+
         std::cout << "Connecting to " << query.host_name() << " ...\n";
         boost::asio::connect(this->socket, endpoint);
     };
@@ -29,15 +29,18 @@ struct Client
         {
             boost::array<char, 128> buf;
             boost::system::error_code error;
-
-            size_t len = socket.read_some(boost::asio::buffer(buf), error);
-
-            if (error == boost::asio::error::eof)
+            size_t len;
+            try {
+                len = socket.read_some(boost::asio::buffer(buf), error);
+            }catch (const boost::system::system_error& e){
                 break; // Connection closed cleanly by peer.
-            else if (error)
-                throw boost::system::system_error(error); // Some other error.
+            }catch (...){
+                std::cout << "unknown error!\n";
+                break;
+            }
 
             std::cout.write(buf.data(), len);
+            return;
 
         }
     }
@@ -81,4 +84,5 @@ int main(int argc, char *argv[]) {
     client.send(send_string);
     std::cout << "Sent  " << argv[3] << "\n";
     client.printResponse();
+    return 0;
 }

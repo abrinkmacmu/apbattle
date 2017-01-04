@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <fstream>
+#include <sstream>
 #include <cereal/archives/json.hpp>
 
 // Custom
@@ -24,12 +24,13 @@ int main(int argc, char *argv[])
 	std::vector<bship::Ship> ships = BBoard.getShipLocations();
 
 	{
-
-		cereal::JSONOutputArchive archive( std::cout );
+		std::stringstream ss;
+		cereal::JSONOutputArchive archive( ss );
 		archive(CEREAL_NVP(ships[0].name),
 				    CEREAL_NVP(ships[0].row), 
 				    CEREAL_NVP(ships[0].col),
 				    CEREAL_NVP(ships[0].direction));
+		std::cout << ss << "\n";
 	}
 
 

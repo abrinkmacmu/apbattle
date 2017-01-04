@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
     boost::asio::io_service io_service;
 
     tcp::resolver resolver(io_service);
-    tcp::resolver::query query("127.0.0.1", argv[1], boost::asio::ip::resolver_query_base::numeric_service);
+    tcp::resolver::query query("192.168.1.6", argv[1], boost::asio::ip::resolver_query_base::numeric_service);
     //tcp::resolver::query query(argv[1], "daytime");
     std::cout << "host_name: " << query.host_name() <<"\n";
     tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
