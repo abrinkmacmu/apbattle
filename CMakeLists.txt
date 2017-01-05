@@ -45,7 +45,7 @@ target_link_libraries(manual_gui
 	#${JSONCPP_LIBRARIES}
 	)
 
-
+add_executable(test_msgs src/test/test_msgs.cpp)
 
 ### Doxygen autogen ####
 

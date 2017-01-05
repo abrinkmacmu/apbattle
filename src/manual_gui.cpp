@@ -25,12 +25,14 @@ int main(int argc, char *argv[])
 
 	{
 		std::stringstream ss;
-		cereal::JSONOutputArchive archive( ss );
-		archive(CEREAL_NVP(ships[0].name),
-				    CEREAL_NVP(ships[0].row), 
-				    CEREAL_NVP(ships[0].col),
-				    CEREAL_NVP(ships[0].direction));
-		std::cout << ss << "\n";
+		{
+			cereal::JSONOutputArchive archive( ss );
+			archive(CEREAL_NVP(ships[0].name),
+			        CEREAL_NVP(ships[0].row),
+			        CEREAL_NVP(ships[0].col),
+			        CEREAL_NVP(ships[0].direction));
+		}
+		std::cout << ss.str() << "\n";
 	}
 
 
