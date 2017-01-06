@@ -5,18 +5,21 @@
 #include <boost/array.hpp>
 #include <string>
 
+namespace bship {
 struct Client
 {
+    boost::asio::io_service svc;
     boost::asio::io_service& io_service;
     boost::asio::ip::tcp::socket socket;
 
-    Client(boost::asio::io_service& svc, std::string const& host, std::string const& port)
-        : io_service(svc), socket(io_service)
+    Client(std::string host, std::string port)
+        : svc(), io_service(svc), socket(io_service)
     {
+        ;
         boost::asio::ip::tcp::resolver resolver(io_service);
         boost::asio::ip::tcp::resolver::query query(host, port);
         boost::asio::ip::tcp::resolver::iterator endpoint = resolver.resolve(query);
-        
+
         std::cout << "Connecting to " << query.host_name() << " ...\n";
         boost::asio::connect(this->socket, endpoint);
     };
@@ -42,6 +45,7 @@ struct Client
 
         }
     }
-};
+}; // class
+} // ns bship
 
 #endif

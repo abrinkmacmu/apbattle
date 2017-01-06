@@ -16,11 +16,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 find_package(Boost 1.54.0 REQUIRED system)
 find_package(Threads)
 find_package(SFML 2 REQUIRED system window graphics)
-#find_package(Jsoncpp)
 
 include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
-	#${JSONCPP_INCLUDE_DIRS}
 	)
 
 ##set(NOVEL_PRINTER_SOURCES 
@@ -42,10 +40,16 @@ target_link_libraries(manual_gui
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 
 	${SFML_LIBRARIES} 
-	#${JSONCPP_LIBRARIES}
 	)
 
 add_executable(test_msgs src/test/test_msgs.cpp)
+
+add_executable(test_agent src/test/test_agent.cpp src/battleship_agent.cpp)
+target_link_libraries(test_agent 
+	${Boost_LIBRARIES} 
+	${CMAKE_THREAD_LIBS_INIT} 
+	${SFML_LIBRARIES} 
+	)
 
 ### Doxygen autogen ####
 

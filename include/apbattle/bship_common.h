@@ -5,6 +5,7 @@
 #include <sstream>
 #include <map>
 
+
 namespace bship {
 
 enum HitStatus {
@@ -109,6 +110,10 @@ struct Ship {
 	}
 
 }; // struct Ship
+
+
+
+
 
 } // ns bship
 #endif
