@@ -2,6 +2,7 @@
 #define __battleship__agent__
 
 #include <apbattle/socket_connection.h>
+#include <apbattle/battle_board.h>
 #include <string>
 #include <queue>
 #include <future>
@@ -19,26 +20,38 @@ public:
 		std::string host, unsigned short port,
   std::string playerName, bool isHost);
 
-	virtual ~BattleshipAgent();
+	virtual ~BattleshipAgent(){};
 
-	void playGame();
+	void playGame(bool goFirst);
 
 private:
 
-	virtual void guessLocation();
+	void resetBoard();
 
-	void respondToRequest();
+	void attackPhase(bool& gameIsOver);
 
-	void logMoves();
+	void defendPhase(bool& gameIsOver);
+
+	void handleGameOver();
+
+	virtual int guessLocation();
+
+	void logAttackPhase(int my_guess, std::string enemy_response, std::string enemy_sunk);
+
+	void logDefendPhase(int enemy_guess, std::string my_response, std::string my_sunk);
+
+	// TODO logShipConfiguration();
 
 	
-
 	std::string host_;
-	unsigned short port_;
-
-	
+	unsigned short port_;	
 	SocketConnection socketConnection_;
 	std::string log_file_name_;
+	std::string log_file_path_;
+	int total_moves_;
+	BattleBoard enemyBoard;
+	BattleBoard playerBoard;
+
 
 
 

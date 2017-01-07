@@ -19,5 +19,7 @@ int main(int argc, char *argv[])
 
 	bship::BattleshipAgent Agent1(argv[1], atoi(argv[2]),argv[3],  isHost) ;
 
+	Agent1.playGame(isHost);	
+
 	return 0;
 }

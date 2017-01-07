@@ -26,25 +26,41 @@ include_directories(
 ## "${cpp_project_INCLUDE_DIR}/novel_printer.h")
 
 
-add_executable(dummy_server src/test/dummy_server.cpp)
-target_link_libraries(dummy_server ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+#add_executable(dummy_server src/test/dummy_server.cpp)
+#target_link_libraries(dummy_server ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(dummy_client src/test/dummy_client.cpp)
-target_link_libraries(dummy_client ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+#add_executable(dummy_client src/test/dummy_client.cpp)
+#target_link_libraries(dummy_client ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(test_socket src/test/test_socket.cpp)
-target_link_libraries(test_socket ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+#add_executable(test_socket src/test/test_socket.cpp)
+#target_link_libraries(test_socket ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-add_executable(manual_gui src/manual_gui.cpp src/battleship_gui.cpp src/battle_board.cpp)
-target_link_libraries(manual_gui 
+#add_executable(manual_gui src/manual_gui.cpp src/battleship_gui.cpp src/battle_board.cpp)
+#target_link_libraries(manual_gui 
+#	${Boost_LIBRARIES} 
+#	${CMAKE_THREAD_LIBS_INIT} 
+#	${SFML_LIBRARIES} 
+#	)
+
+add_executable(test_msgs src/test/test_msgs.cpp)
+
+
+add_executable(test_board
+	src/test/test_board.cpp 
+	src/battleship_agent.cpp 
+	src/socket_connection.cpp
+	src/battle_board.cpp)
+target_link_libraries(test_board
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 
 	${SFML_LIBRARIES} 
 	)
 
-add_executable(test_msgs src/test/test_msgs.cpp)
-
-add_executable(test_agent src/test/test_agent.cpp src/battleship_agent.cpp src/socket_connection.cpp)
+add_executable(test_agent 
+	src/test/test_agent.cpp 
+	src/battleship_agent.cpp 
+	src/socket_connection.cpp
+	src/battle_board.cpp)
 target_link_libraries(test_agent 
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 

@@ -2,6 +2,8 @@
 #define __bship__common__
 
 #include <cereal/archives/json.hpp>
+#include <cereal/external/rapidjson/document.h>
+#include <cassert>
 #include <sstream>
 #include <map>
 
@@ -46,12 +48,24 @@ const std::map<ShipName, int> shipLengthMap{
 const std::map<ShipName, std::string> shipNameLookup{
 	{Carrier, "Carrier"},
 	{Battleship, "Battleship"},
-	{Cruiser, "Crusier"},
+	{Cruiser, "Cruiser"},
 	{Submarine, "Submarine"},
 	{Destroyer, "Destroyer"},
 	{None, ""}
 };
 
+const std::map<std::string, ShipName> shipNameReverseLookup{
+	{"Carrier", Carrier},
+	{"Battleship", Battleship},
+	{"Cruiser", Cruiser},
+	{"Submarine", Submarine},
+	{"Destroyer", Destroyer},
+	{"", None}
+};
+
+const int CONNECTION_CONST = 0;
+const int GUESS_CONST = 1;
+const int RESPONSE_CONST = 2;
 
 
 inline void removeNewLine(std::string &s)
@@ -66,34 +80,29 @@ inline void removeNewLine(std::string &s)
 	}
 };
 
-struct ConnectionMsg {
+inline std::string createConnectionMsg(bool reset_requested, bool ready_to_play) {
+	std::stringstream ss;
 	int message_type = 0;
-	bool reset_requested;
-	bool ready_to_play;
-	template<class Archive>
-	void serialize(Archive &archive){
-		archive(message_type, reset_requested, ready_to_play);
+	{
+		cereal::JSONOutputArchive archive(ss);
+		archive(CEREAL_NVP(message_type),
+		        CEREAL_NVP(reset_requested),
+		        CEREAL_NVP(ready_to_play));
 	}
+	std::string str(ss.str());
+	removeNewLine(str);
+	return str;
 };
 
-struct GuessMsg {
-	int message_type = 1;
-	int guess;
-	template<class Archive>
-	void serialize(Archive &archive){
-		archive(message_type, guess);
-	}
-};
+inline void parseConnectionMsg(std::string& msg, bool& reset_requested, bool& ready_to_play)
+{
+	rapidjson::Document document;
+	document.Parse(msg.c_str());
 
-struct ResponseMsg {
-	int message_type = 2;
-	std::string response;
-	std::string sunk;
-	bool gameover;
-	template<class Archive>
-	void serialize(Archive &archive){
-		archive(message_type, response, sunk, gameover);
-	}
+	assert(document["message_type"].GetInt() == CONNECTION_CONST);
+
+	reset_requested = document["reset_requested"].GetBool();
+	ready_to_play = document["ready_to_play"].GetBool();
 };
 
 inline std::string createGuessMsg(int guess) {
@@ -107,7 +116,16 @@ inline std::string createGuessMsg(int guess) {
 	std::string str(ss.str());
 	removeNewLine(str);
 	return str;
+};
 
+inline void parseGuessMsg(std::string& msg, int& guess)
+{
+	rapidjson::Document document;
+	document.Parse(msg.c_str());
+
+	assert(document["message_type"].GetInt() == GUESS_CONST);
+
+	guess = document["guess"].GetInt();
 };
 
 
@@ -117,7 +135,7 @@ inline std::string createResponseMsg(HitStatus hitStatus, ShipName sunkShip, boo
 
 	std::string response(hitStatusLookup.at(hitStatus));
 	std::string sunk(shipNameLookup.at(sunkShip));
-	int message_type = 2;
+	int message_type = RESPONSE_CONST;
 
 	std::stringstream ss;
 	{
@@ -133,24 +151,27 @@ inline std::string createResponseMsg(HitStatus hitStatus, ShipName sunkShip, boo
 	return str;
 };
 
-//inline cereal::JSONInputArchive decodeMessage(std::string msg){
-//	std::stringstream(msg);
-//	{
-//	cereal::JSONInputArchive(ss);
-//}
+inline void parseResponseMsg(std::string msg, HitStatus& response, ShipName& sunk, bool& gameover)
+{
+	rapidjson::Document document;
+	document.Parse(msg.c_str());
 
-inline std::string createConnectionMsg(bool reset_requested, bool ready_to_play) {
-	std::stringstream ss;
-	int message_type = 0;
-	{
-		cereal::JSONOutputArchive archive(ss);
-		archive(CEREAL_NVP(message_type),
-		        CEREAL_NVP(reset_requested),
-		        CEREAL_NVP(ready_to_play));
+	assert(document["message_type"].GetInt() == RESPONSE_CONST);
+
+	std::string res_string(document["response"].GetString());
+
+	if( 0 == res_string.compare("Hit!")){
+		response = Hit;
+	}else if( 0 == res_string.compare("Miss!")){
+		response = Miss;
+	}else{
+		std::cerr << "Error: Response:Response type unknown \n";
 	}
-	std::string str(ss.str());
-	removeNewLine(str);
-	return str;
+
+	sunk = shipNameReverseLookup.at(document["sunk"].GetString());
+
+	gameover = document["gameover"].GetBool();
+	         
 };
 
 struct Ship {
