@@ -2,7 +2,8 @@
 #define __battleship__agent__
 
 #include <apbattle/socket_connection.h>
-#include <apbattle/battle_board.h>
+#include <apbattle/player_battle_board.h>
+#include <apbattle/enemy_battle_board.h>
 #include <string>
 #include <queue>
 #include <future>
@@ -49,8 +50,8 @@ private:
 	std::string log_file_name_;
 	std::string log_file_path_;
 	int total_moves_;
-	BattleBoard enemyBoard;
-	BattleBoard playerBoard;
+	EnemyBattleBoard enemyBoard;
+	PlayerBattleBoard playerBoard;
 
 
 

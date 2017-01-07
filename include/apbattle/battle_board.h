@@ -16,25 +16,20 @@ public:
 	/**
 	 * @brief default constructor
 	 */
-	BattleBoard(std::string owner, std::string window_title);
+	BattleBoard(std::string window_title);
+
+	virtual ~BattleBoard(){};
 
 	/**
 	 * @brief checks if the ship position is valid in provided map
 	 */
-	bool checkShipPlacement(const Ship& ship, const std::vector<std::vector<int>>& map);
-
-	/**
-	 * @brief Checks player's map for HitStatus and sinking status
-	 */
-	bool checkGridLocation(int row, int col, HitStatus& status, bool& didSinkShip, ShipName& shipName);
+	bool checkShipPlacement(const Ship& ship);
 
 	void setHit(int row, int col, HitStatus hs);
 
-	void getMap(std::vector<std::vector<int>>& map) {map = map_;};
+	virtual void reset();
 
-	std::vector<Ship> getShipLocations() {return ships_;};
-
-	void reset();
+	bool checkGameoverCondition();
 
 	/**
 	* @brief Handle all keyboard and mouse events
@@ -46,43 +41,30 @@ public:
 	 */
 	bool updateWindow();
 
-private:
+	// Setters/getters
 
-	void updateHitMapGraphics();
+	void getMap(std::vector<std::vector<int>>& map) {map = map_;};
 
-	/**
-	 * @brief self-explainatory
-	 */
-	void generateRandomValidShipPosition(Ship& ship);
-
-	/**
-	 * @brief generates a random, valid ship configurations for all ships
-	 */
-	void generateRandomShips();
-
-	/**
-	 * @brief helper to print details for debugging
-	 */
-	void printShipDetails(const Ship& ship);
-
-	/**
-	 * @brief places specified ship onto the hit_map
-	 */
-	void placeShip(const Ship& ship, int shipIndex);
+	void setEnableGraphics(bool enable){ enableGraphics_ = enable;};
 
 	void consolePrintBoard();
 
-	bool checkIfSunk(Ship& ship);
+	
 
-	std::vector<Ship> ships_;
+protected:
+	std::vector<ShipName> sunk_list_;
 	std::vector<std::vector<int>> map_;
-	std::map<int, int> reverseIndexLookup_;
-	std::string owner_;
-	int nCells_;
-	int cellSize_;
-	int displaySize_;
 	sf::RenderWindow window_;
 	sf::VertexArray vArray_;
+	bool enableGraphics_;
+	int nCells_;
+	int displaySize_;
+	int cellSize_;
+
+	void updateHitMapGraphics();
+
+	
+	
 
 
 }; // class

@@ -49,7 +49,9 @@ add_executable(test_board
 	src/test/test_board.cpp 
 	src/battleship_agent.cpp 
 	src/socket_connection.cpp
-	src/battle_board.cpp)
+	src/battle_board.cpp
+	src/player_battle_board.cpp
+	src/enemy_battle_board.cpp)
 target_link_libraries(test_board
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 
@@ -60,7 +62,9 @@ add_executable(test_agent
 	src/test/test_agent.cpp 
 	src/battleship_agent.cpp 
 	src/socket_connection.cpp
-	src/battle_board.cpp)
+	src/battle_board.cpp
+	src/player_battle_board.cpp
+	src/enemy_battle_board.cpp)
 target_link_libraries(test_agent 
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 

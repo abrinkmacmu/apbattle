@@ -17,8 +17,8 @@ bship::BattleshipAgent::BattleshipAgent(
 	host_(host),
 	port_(port),
 	log_file_path_("/home/apark/cpp_projects/battship/apbattle/data/"),
-	enemyBoard("enemy", std::string(playerName + ": Enemy-View")),
-	playerBoard("player", std::string(playerName + ": Player-View"))
+	enemyBoard( std::string(playerName + ": Enemy-View")),
+	playerBoard( std::string(playerName + ": Player-View"))
 {
 	
 	std::time_t now = std::time(0);
@@ -70,23 +70,34 @@ void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 
 	int guessRowCol = guessLocation();
 	std::cout << "Attack guess: " << guessRowCol << "\n";
+
 	std::string gMsg = createGuessMsg(guessRowCol);
+	std::cout << "created guess msg\n";
+
 	socketConnection_.write(gMsg);
+	std::cout << "SOCKET WRITE: Guess\n";
+
 	std::string msg;
 	if (socketConnection_.read(msg)) {
+
 		HitStatus hs;
 		ShipName sn;
 		bool gameover = false;
 		parseResponseMsg(msg, hs, sn, gameover);
+		std::cout << "SOCKET READ: Response\n";
 		if (gameover) {
 			gameIsOver = true;
 			return;
 		}
+
 		enemyBoard.setHit(guessRowCol / 10, guessRowCol % 10, hs);
 		enemyBoard.updateWindow();
+		std::cout << "Updated graphics\n";
+
 	} else {
 		std::cerr << "Error: Socket Read error in Attack phase\n";
 	}
+	std::cout << "Ending attack phase\n\n";
 }
 
 
@@ -98,18 +109,25 @@ void bship::BattleshipAgent::defendPhase(bool& gameIsOver) {
 	if (socketConnection_.read(msg)) {
 		int guess;
 		parseGuessMsg(msg, guess);
+		std::cout << "SOCKET READ: Guess\n";
 		HitStatus status;
-		bool didSinkShip;
 		ShipName shipName;
 		std::cout << "Defend guess: " << guess << ", " << guess / 10 << ", " << guess % 10 << "\n";
-		playerBoard.checkGridLocation(guess / 10, guess % 10, status, didSinkShip, shipName);
+		playerBoard.checkGridLocation(guess / 10, guess % 10, status, shipName);
+		std::cout << "Checked grid location\n";
+		std::cout << "shipName: " << shipName << "\n";
 		std::string resMsg = createResponseMsg(status, shipName , false); // todo gameover condition
+
 		socketConnection_.write(resMsg);
+		std::cout << "SOCKET WRITE: Response\n";
 		playerBoard.updateWindow();
+		std::cout << "updating graphics\n";
 
 	} else {
 		std::cerr << "Error: Socket Read error in defend phase\n";
 	}
+
+	std::cout << "Ending defend phase\n\n";
 
 }
 
