@@ -52,41 +52,105 @@ const std::map<ShipName, std::string> shipNameLookup{
 	{None, ""}
 };
 
-inline std::string createGuessMsg(int guess) {
 
+
+inline void removeNewLine(std::string &s)
+{
+	for (;;) {
+		auto it = s.find('\n');
+		if ( it != s.npos) {
+			s.erase(it, 1);
+		} else {
+			return;
+		}
+	}
+};
+
+struct ConnectionMsg {
+	int message_type = 0;
+	bool reset_requested;
+	bool ready_to_play;
+	template<class Archive>
+	void serialize(Archive &archive){
+		archive(message_type, reset_requested, ready_to_play);
+	}
+};
+
+struct GuessMsg {
+	int message_type = 1;
+	int guess;
+	template<class Archive>
+	void serialize(Archive &archive){
+		archive(message_type, guess);
+	}
+};
+
+struct ResponseMsg {
+	int message_type = 2;
+	std::string response;
+	std::string sunk;
+	bool gameover;
+	template<class Archive>
+	void serialize(Archive &archive){
+		archive(message_type, response, sunk, gameover);
+	}
+};
+
+inline std::string createGuessMsg(int guess) {
+	int message_type = 1;
 	std::stringstream ss;
 	{
 		cereal::JSONOutputArchive archive(ss);
-		archive(CEREAL_NVP(guess));
+		archive(CEREAL_NVP(message_type),
+		        CEREAL_NVP(guess));
 	}
-	return ss.str();
+	std::string str(ss.str());
+	removeNewLine(str);
+	return str;
 
 };
+
+
 
 inline std::string createResponseMsg(HitStatus hitStatus, ShipName sunkShip, bool gameover)
 {
 
 	std::string response(hitStatusLookup.at(hitStatus));
 	std::string sunk(shipNameLookup.at(sunkShip));
+	int message_type = 2;
 
 	std::stringstream ss;
 	{
 		cereal::JSONOutputArchive archive(ss);
-		archive(CEREAL_NVP(response),
+		archive(CEREAL_NVP(message_type),
+		        CEREAL_NVP(response),
 		        CEREAL_NVP(sunk),
 		        CEREAL_NVP(gameover));
 	}
-	return ss.str();
+
+	std::string str(ss.str());
+	removeNewLine(str);
+	return str;
 };
+
+//inline cereal::JSONInputArchive decodeMessage(std::string msg){
+//	std::stringstream(msg);
+//	{
+//	cereal::JSONInputArchive(ss);
+//}
 
 inline std::string createConnectionMsg(bool reset_requested, bool ready_to_play) {
 	std::stringstream ss;
+	int message_type = 0;
 	{
 		cereal::JSONOutputArchive archive(ss);
-		archive(CEREAL_NVP(reset_requested),
+		archive(CEREAL_NVP(message_type),
+		        CEREAL_NVP(reset_requested),
 		        CEREAL_NVP(ready_to_play));
 	}
-	return ss.str();
+	std::string str(ss.str());
+	removeNewLine(str);
+	return str;
 };
 
 struct Ship {

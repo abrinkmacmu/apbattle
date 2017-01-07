@@ -1,7 +1,7 @@
 #ifndef __battleship__agent__
 #define __battleship__agent__
 
-#include <apbattle/socket_client.h>
+#include <apbattle/socket_connection.h>
 #include <string>
 #include <queue>
 #include <future>
@@ -16,8 +16,8 @@ public:
 	 * @brief spins up reading thread and allocates fields
 	 */
 	BattleshipAgent(
-		std::string host, std::string host_port,
-		std::string client, std::string client_port);
+		std::string host, unsigned short port,
+  std::string playerName, bool isHost);
 
 	virtual ~BattleshipAgent();
 
@@ -25,19 +25,20 @@ public:
 
 private:
 
-	void connectToSocket();
-
 	virtual void guessLocation();
 
 	void respondToRequest();
 
 	void logMoves();
 
-	void sendMessage();
+	
 
-	Client socketClient_;
+	std::string host_;
+	unsigned short port_;
 
-	std::future<std::queue<std::string>> future_read_queue_;
+	
+	SocketConnection socketConnection_;
+	std::string log_file_name_;
 
 
 

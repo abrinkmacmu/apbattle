@@ -1,63 +1,59 @@
 
 #include <iostream>
-#include <unistd.h>
+#include <unistd.h> //sleep
 #include <queue>
+#include <apbattle/bship_common.h>
 #include <apbattle/battleship_agent.h>
-#include <mutex>
-#include <thread>
 
+#include <cereal/external/rapidjson/document.h>
 
-namespace bship{
-
-std::mutex reader_mutex;
-void asyncReadServer( std::queue<std::string> *queue,
-    std::string host, std::string port)
-{
-	
-	std::string str("Hello");
-	int n = 0;
-	for (;;) {
-		std::string str("Hello ");
-		str.append(std::to_string(n));
-		reader_mutex.lock();
-		queue->emplace(str);
-		reader_mutex.unlock();
-		n++;
-		usleep(1e6);
-		if(n > 10){ break;}
-	}
-
-}
-
-} // ns bship
 
 bship::BattleshipAgent::BattleshipAgent(
-    std::string host, std::string host_port,
-    std::string client, std::string client_port):
-    	socketClient_( client, client_port){
+  std::string host, unsigned short port,
+  std::string playerName, bool isHost):
+	socketConnection_(host, port, isHost),
+	host_(host),
+	port_(port)
+{
 
-	//future_read_queue_ = std::async(std::launch::async, asyncReadServer, host, host_port);
-	//std::cout << "Started up async reader\n";
-    //std::queue<std::string> read_queue = future_read_queue_.get();
+	std::cout << "Battleship Agent successfully constructed\n";
 
-    std::queue<std::string> read_queue;
-    std::thread t(&bship::asyncReadServer, &read_queue, host, host_port);
+	if (isHost) {
+
+		socketConnection_.write(createResponseMsg(bship::Hit, bship::Carrier, false));
+		usleep(1e6);
+	} else {
+
+		std::string read_buffer;
+		bool suc = true;
+		for (;;) {
+			suc = socketConnection_.read(read_buffer);
+
+			std::cout << "raw read message: " << read_buffer << "nl\n";
+			// deserialize class
+			bship::GuessMsg newGuess;
+			rapidjson::Document document;
+			document.Parse(read_buffer.c_str());
+
+			std::cout << "deserialized data is : " 
+				<< document["message_type"].GetInt() << ","
+				<< document["response"].GetString() << ","
+				<< document["sunk"].GetString() << ","
+				<< document["gameover"].GetBool() << "\n";
 
 
-	for(;;){
-		usleep(3e6);
-		std::cout << "slept, waiting for queue result\n";
-		reader_mutex.lock();
-		
-		while(!read_queue.empty())
-		{
-			std::cout << read_queue.front() << "\n";
+			if ( suc) {
+				std::cout << read_buffer << "\n";
+				socketConnection_.write(read_buffer.append(playerName));
+				usleep(1e6);
 
-			read_queue.pop();
+			} else {
+				std::cout << "failed to read buffer\n";
+				usleep(1e6);
+			}
+
 		}
-		reader_mutex.unlock();
 	}
-
 
 }
 
@@ -72,11 +68,6 @@ void bship::BattleshipAgent::playGame()
 
 }
 
-
-void bship::BattleshipAgent::connectToSocket()
-{
-
-}
 
 void bship::BattleshipAgent::guessLocation()
 {
@@ -93,8 +84,7 @@ void bship::BattleshipAgent::logMoves()
 
 }
 
-void bship::BattleshipAgent::sendMessage()
-{
 
-}
+
+
 

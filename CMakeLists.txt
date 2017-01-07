@@ -44,7 +44,7 @@ target_link_libraries(manual_gui
 
 add_executable(test_msgs src/test/test_msgs.cpp)
 
-add_executable(test_agent src/test/test_agent.cpp src/battleship_agent.cpp)
+add_executable(test_agent src/test/test_agent.cpp src/battleship_agent.cpp src/socket_connection.cpp)
 target_link_libraries(test_agent 
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 
