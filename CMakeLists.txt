@@ -63,15 +63,15 @@ target_link_libraries(run_counting_agent
 ### Doxygen autogen ####
 ########################
 
-#find_package(Doxygen)
-#if(DOXYGEN_FOUND)
-#	configure_file(${PROJECT_SOURCE_DIR}/Doxyfile ${PROJECT_SOURCE_DIR}/Doxyfile @ONLY)
-#	add_custom_target(all
-#	${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
-#	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#	COMMENT "Generating API documentation with Doxygen" VERBATIM
-#)
-#endif(DOXYGEN_FOUND)
+find_package(Doxygen)
+if(DOXYGEN_FOUND)
+	configure_file(${PROJECT_SOURCE_DIR}/Doxyfile ${PROJECT_SOURCE_DIR}/Doxyfile @ONLY)
+	add_custom_target(all
+	${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
+	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+	COMMENT "Generating API documentation with Doxygen" VERBATIM
+)
+endif(DOXYGEN_FOUND)
 
 
 
