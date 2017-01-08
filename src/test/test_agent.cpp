@@ -18,7 +18,11 @@ int main(int argc, char *argv[])
 	}
 
 	bship::BattleshipAgent Agent1(argv[1], atoi(argv[2]),argv[3],  isHost) ;
+	if(isHost){
+		usleep(1e6);
 
+	}
+	std::srand (time(NULL));
 	Agent1.playGame(isHost);	
 
 	return 0;

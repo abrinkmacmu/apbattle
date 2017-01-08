@@ -134,9 +134,7 @@ inline std::string createResponseMsg(HitStatus hitStatus, ShipName sunkShip, boo
 {
 
 	std::string response(hitStatusLookup.at(hitStatus));
-	std::cout << "found response: " << response << "\n";
 	std::string sunk(shipNameLookup.at(sunkShip));
-	std::cout << "found sunk: " << sunk << "\n";
 	int message_type = RESPONSE_CONST;
 
 	std::stringstream ss;

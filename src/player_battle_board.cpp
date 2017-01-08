@@ -1,4 +1,5 @@
-
+#include <chrono>
+#include <random>
 #include <apbattle/player_battle_board.h>
 
 
@@ -18,11 +19,12 @@ bool bship::PlayerBattleBoard::checkGridLocation(
 	if (map_[row][col] == Hit) {
 		status = Hit;
 		std::cout << "recombined: " << (row * 10 + col) << "\n";
-		int shipIndex = reverseIndexLookup_[(row * 10 + col)]; // TODO refactor Battleboard for enemy and player configs!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		int shipIndex = reverseIndexLookup_[(row * 10 + col)]; 
 		ships_[shipIndex].hits++;
 		if (checkIfSunk(ships_[shipIndex])) {
 			
 			shipName = ships_[shipIndex].name;
+			sunk_list_.push_back(shipName);
 		}
 	} else {
 		status = Miss;
@@ -47,12 +49,15 @@ void bship::PlayerBattleBoard::printShipDetails(const Ship& ship)
 
 void bship::PlayerBattleBoard::reset()
 {
-	generateRandomShips();
-	consolePrintBoard();
+	//out with the old....
 	ships_.clear();
+	BattleBoard::reset();
 	reverseIndexLookup_.clear();
 
-	BattleBoard::reset();
+	//in with the new...
+	generateRandomShips();
+	consolePrintBoard();
+	
 }
 
 
@@ -62,7 +67,6 @@ void bship::PlayerBattleBoard::reset()
 
 void bship::PlayerBattleBoard::generateRandomShips()
 {
-	srand (time(NULL));
 	Ship newShip;
 	newShip.name = Carrier;
 	generateRandomValidShipPosition(newShip);
@@ -102,9 +106,8 @@ void bship::PlayerBattleBoard::generateRandomValidShipPosition(Ship& ship)
 	bool validPositionFound = false;
 	while (!validPositionFound)
 	{
-
-		int rc = rand() % 100; // between 0 and 99
-		int dir = rand() % 2;  // between 0 and 1
+		int rc = std::rand() % 100; // between 0 and 99
+		int dir = std::rand() % 2;  // between 0 and 1
 		ship.row = rc % 10;
 		ship.col = rc / 10;
 		if (dir == 1) {

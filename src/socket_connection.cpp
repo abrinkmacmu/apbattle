@@ -2,7 +2,7 @@
 
 
 bship::SocketConnection::SocketConnection(std::string host, unsigned short port, bool isHost):
-	io_service(), socket(io_service)
+	io_service(), socket(io_service), accumulated()
 {
 	std::cout << "in SocketConnection ctor\n";
 	endpoint = boost::asio::ip::tcp::endpoint (boost::asio::ip::address_v4::from_string(host), port);
@@ -27,6 +27,7 @@ void bship::SocketConnection::setupHostConnection()
 	boost::asio::ip::tcp::acceptor acceptor(io_service, endpoint);
 	acceptor.accept(socket);
 	std::cout << "Client Accepted.\n";
+	accumulated.clear();
 }
 
 void bship::SocketConnection::setupClientConnection()
@@ -52,6 +53,7 @@ void bship::SocketConnection::setupClientConnection()
 	} else {
 		std::cerr << "ERROR: Client could not reach host, giving up\n";
 	}
+	accumulated.clear();
 }
 
 bool bship::SocketConnection::read(std::string& read_buffer)
@@ -68,12 +70,18 @@ bool bship::SocketConnection::read(std::string& read_buffer)
 			throw boost::system::system_error(error); // Some other error.
 			return false;
 		}
+		std::cout << "Buffdata " << buf.data() << "\n";
 
-		accumulated.append(buf.data());
+		std::copy(buf.begin(), buf.begin()+len, std::back_inserter(accumulated));
+
+		std::cout << "before accu: " << accumulated << "\n";
 		auto first = accumulated.find('\n');
 		if( first != accumulated.npos){
 			read_buffer = accumulated.substr(0, first);
 			accumulated.erase(accumulated.begin(), accumulated.begin()+first+1);
+
+			std::cout << "after accu: " << accumulated << "\n";
+
 			return true;
 		}
 	}

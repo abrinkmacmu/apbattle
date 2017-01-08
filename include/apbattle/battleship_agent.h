@@ -33,7 +33,9 @@ private:
 
 	void defendPhase(bool& gameIsOver);
 
-	void handleGameOver();
+	void initiateConnection();
+	
+	void respondToConnection();
 
 	virtual int guessLocation();
 
@@ -52,6 +54,7 @@ private:
 	int total_moves_;
 	EnemyBattleBoard enemyBoard;
 	PlayerBattleBoard playerBoard;
+	std::vector<bool> guess_list_;
 
 
 

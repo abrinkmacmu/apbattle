@@ -58,7 +58,7 @@ void bship::BattleBoard::setHit(int row, int col, HitStatus hs)
 
 bool bship::BattleBoard::checkGameoverCondition()
 {
-	if(sunk_list_.size() == 5 )
+	if(sunk_list_.size() >= 5 )
 	{
 		return true;
 	}else{
