@@ -40,6 +40,7 @@ run_random_agent
 	An agent that plays the game at random
 
 Arguments (ordering enforced):
+
 	hostIP - ip address of the host e.g. "127.0.0.1"
 	hostport - port of the hosted game e.g. "8080"
 	playername - arbritrary player name for logging and window title e.g. "player 1"
@@ -47,10 +48,12 @@ Arguments (ordering enforced):
 
 run_manual_agent
 	
-	An agent that allows the user to click on the desired guess coodinate.  The program was not designed
-	for manual play, so some of the game rules are not strictly enforced, like guessing the same coordinate twice.
+	An agent that allows the user to click on the desired guess coodinate.  
+	The program was not designed for manual play, so some of the 
+	game rules are not strictly enforced, like guessing the same coordinate twice.
 	
 Arguments (ordering enforced):
+
 	hostIP - ip address of the host e.g. "127.0.0.1"
 	hostport - port of the hosted game e.g. "8080"
 	playername - arbritrary player name for logging and window title e.g. "player 1"
@@ -61,6 +64,7 @@ run_counting_agent
 	An agent that uses combinatorics to select coordinates
 
 Arguments (ordering enforced):
+
 	hostIP - ip address of the host e.g. "127.0.0.1"
 	hostport - port of the hosted game e.g. "8080"
 	playername - arbritrary player name for logging and window title e.g. "player 1"
