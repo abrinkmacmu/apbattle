@@ -29,6 +29,8 @@ public:
 
 	void setDeadCell(int row, int col);
 
+	void appendSunkShip(ShipName sn);
+
 	virtual void reset();
 
 	bool checkGameoverCondition();

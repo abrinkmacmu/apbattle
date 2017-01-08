@@ -9,7 +9,8 @@ class CountingAgent: public BattleshipAgent
 {
 public:
 	CountingAgent(std::string host, unsigned short port,
-	            std::string playerName, bool isHost, bool enableLogging = false);
+	            std::string playerName, bool isHost, 
+	            bool enableLogging = false, int inflationFactor = 1);
 
 	~CountingAgent() {};
 

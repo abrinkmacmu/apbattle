@@ -22,6 +22,7 @@ include_directories(
 	)
 
 set(SOURCE_FILES 
+	src/counting_agent.cpp
 	src/manual_agent.cpp 
 	src/battleship_agent.cpp 
 	src/socket_connection.cpp
@@ -43,6 +44,15 @@ add_executable(run_manual_agent
   src/run_manual_agent.cpp 
 	${SOURCE_FILES})
 target_link_libraries(run_manual_agent 
+	${Boost_LIBRARIES} 
+	${CMAKE_THREAD_LIBS_INIT} 
+	${SFML_LIBRARIES} 
+	)
+
+add_executable(run_counting_agent
+  src/run_counting_agent.cpp 
+	${SOURCE_FILES})
+target_link_libraries(run_counting_agent 
 	${Boost_LIBRARIES} 
 	${CMAKE_THREAD_LIBS_INIT} 
 	${SFML_LIBRARIES} 

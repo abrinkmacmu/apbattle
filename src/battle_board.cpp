@@ -15,7 +15,7 @@ bship::BattleBoard::BattleBoard(std::string window_title):
 
 	updateWindow();
 	window_.setFramerateLimit(30); // only need to call once
-	std::cout << "initalized Base Battle Board: " << window_title << "\n";
+	std::cout << "initalized Battle Board: " << window_title << "\n";
 }
 
 bool bship::BattleBoard::checkShipPlacement(const Ship& ship)
@@ -37,7 +37,7 @@ bool bship::BattleBoard::checkShipPlacement(const Ship& ship)
 			break;
 		}
 
-		if (map_[x][y] != Unknown) {
+		if (map_[x][y] == Placed or map_[x][y] == Miss or map_[x][y] == SunkCell) {
 			validPlacement = false;
 			break;
 		}
@@ -59,6 +59,11 @@ void bship::BattleBoard::setHit(int row, int col, HitStatus hs)
 void bship::BattleBoard::setDeadCell(int row, int col)
 {
 	map_[row][col] = bship::SunkCell;
+}
+
+void bship::BattleBoard::appendSunkShip(ShipName sn)
+{
+	sunk_list_.push_back(sn);
 }
 
 bool bship::BattleBoard::checkGameoverCondition()

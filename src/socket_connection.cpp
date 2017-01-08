@@ -4,7 +4,6 @@
 bship::SocketConnection::SocketConnection(std::string host, unsigned short port, bool isHost):
 	io_service(), socket(io_service), accumulated()
 {
-	std::cout << "in SocketConnection ctor\n";
 	endpoint = boost::asio::ip::tcp::endpoint (boost::asio::ip::address_v4::from_string(host), port);
 
 	std::cout << "Connecting at " << endpoint.address() << " : " << endpoint.port() << "\n";
@@ -32,15 +31,15 @@ void bship::SocketConnection::setupHostConnection()
 
 void bship::SocketConnection::setupClientConnection()
 {
-	std::cout << "A Client... attempting to connect to host\n";
+	std::cout << "Client... attempting to connect to host\n";
 	int attempts = 0;
 	bool connected = false;
-	while (attempts < 50) {
+	while (attempts < 25) {
 
 		boost::system::error_code ec;
 		socket.connect(endpoint, ec);
 		if (ec) {
-			std::cout << "attempt " << attempts << " failed, retrying..\n";
+			std::cout << "attempt " << attempts << " failed, retrying up to 25 times..\n";
 			attempts++;
 			usleep(2e6);
 		} else {

@@ -62,7 +62,7 @@ void bship::BattleshipAgent::playGame(bool goFirst)
 
 void bship::BattleshipAgent::resetBoard()
 {
-	total_moves_ = 0;
+	total_guesses_ = 0;
 	for (int i = 0; i < guess_list_.size(); i++) { guess_list_[i] = false;}
 	enemyBoard.reset();
 	playerBoard.reset();
@@ -103,21 +103,25 @@ void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 	if (socketConnection_.read(msg)) {
 
 		HitStatus hs;
-		ShipName sn;
+		ShipName sn = bship::None;
 		bool gameover = false;
 		parseResponseMsg(msg, hs, sn, gameover);
 
 		// print sunk ship for manual agents
-		if (sn != bship::None) { std::cout << "From Enemy: You have sunk my : " << shipNameLookup.at(sn) << "\n";}
+		if (sn != bship::None) { 
+			std::cout << "From Enemy: turn "<< total_guesses_ 
+			<< " You have sunk my : " << shipNameLookup.at(sn) << "\n";
+		}
 		//std::cout << "SOCKET READ: Response " << msg << "\n";
 
 		if (gameover) {
-			std::cout << "GAMEOVER! you have WON!!!!\n\n";
+			std::cout << "\nGAMEOVER! you have WON in "<< total_guesses_ << " total guesses \n";
 			gameIsOver = true;
 			return;
 		}
 		if (sn != bship::None) {
 			enemyBoard.setDeadCell(guessRowCol / 10, guessRowCol % 10);
+			enemyBoard.appendSunkShip(sn);
 		} else {
 			enemyBoard.setHit(guessRowCol / 10, guessRowCol % 10, hs);
 		}
@@ -126,6 +130,7 @@ void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 	} else {
 		std::cerr << "Error: Socket Read error in Attack phase\n";
 	}
+	total_guesses_++;
 }
 
 
@@ -146,13 +151,11 @@ void bship::BattleshipAgent::defendPhase(bool& gameIsOver) {
 		gameIsOver = playerBoard.checkGameoverCondition();
 		std::string resMsg = createResponseMsg(status, sunkShipName , gameIsOver); // todo gameover condition
 		socketConnection_.write(resMsg);
-		if (status == bship::Hit) {
-			std::cout << "Oh No, you it me at " << guess << "\n";
-		}
+
 		//std::cout << "SOCKET WRITE: Response " << resMsg << "\n";
 
 		if (gameIsOver) {
-			std::cout << "GAMEOVER! you have LOST :c\n\n";
+			std::cout << "\nGAMEOVER! you have LOST in "<< total_guesses_ << " total guesses  :c\n";
 			return;
 		}
 
@@ -198,7 +201,7 @@ void bship::BattleshipAgent::logAttackPhase(
 {
 	std::ofstream file;
 	file.open(log_file_path_ + log_file_name_, std::ios::app);
-	file << total_moves_ << ", "
+	file << total_guesses_ << ", "
 	     << "attack " << ", "
 	     << my_guess << ", "
 	     << enemy_response << ", "
@@ -213,7 +216,7 @@ void bship::BattleshipAgent::logDefendPhase(
 {
 	std::ofstream file;
 	file.open(log_file_path_ + log_file_name_, std::ios::app);
-	file << total_moves_ << ", "
+	file << total_guesses_ << ", "
 	     << "defend " << ", "
 	     << enemy_guess << " , "
 	     << my_response << ", "

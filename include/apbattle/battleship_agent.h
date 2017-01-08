@@ -52,7 +52,7 @@ protected:
 	SocketConnection socketConnection_;
 	std::string log_file_name_;
 	std::string log_file_path_;
-	int total_moves_;
+	int total_guesses_;
 	EnemyBattleBoard enemyBoard;
 	PlayerBattleBoard playerBoard;
 	std::vector<bool> guess_list_;

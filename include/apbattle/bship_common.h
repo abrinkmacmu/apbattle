@@ -14,8 +14,8 @@ enum HitStatus {
 	Unknown,
 	Hit,
 	Miss,
-	Placed,
-	SunkCell
+	Placed, // player only
+	SunkCell // enemy only
 };
 
 const std::map<HitStatus, std::string> hitStatusLookup{

@@ -6,7 +6,7 @@
 bship::PlayerBattleBoard::PlayerBattleBoard(std::string window_title):
 BattleBoard::BattleBoard(window_title)
 {
-	std::cout << "initalized PlayerBattleBoard\n";
+
 }
 
 
@@ -55,7 +55,7 @@ void bship::PlayerBattleBoard::reset()
 
 	//in with the new...
 	generateRandomShips();
-	consolePrintBoard();
+	//consolePrintBoard();
 	
 }
 
@@ -71,31 +71,31 @@ void bship::PlayerBattleBoard::generateRandomShips()
 	generateRandomValidShipPosition(newShip);
 	ships_.push_back(newShip);
 	placeShip(newShip, ships_.size() - 1);
-	printShipDetails(newShip);
+	//printShipDetails(newShip);
 
 	newShip.name = Battleship;
 	generateRandomValidShipPosition(newShip);
 	ships_.push_back(newShip);
 	placeShip(newShip, ships_.size() - 1);
-	printShipDetails(newShip);
+	//printShipDetails(newShip);
 
 	newShip.name = Cruiser;
 	generateRandomValidShipPosition(newShip);
 	ships_.push_back(newShip);
 	placeShip(newShip, ships_.size() - 1);
-	printShipDetails(newShip);
+	//printShipDetails(newShip);
 
 	newShip.name = Submarine;
 	generateRandomValidShipPosition(newShip);
 	ships_.push_back(newShip);
 	placeShip(newShip, ships_.size() - 1);
-	printShipDetails(newShip);
+	//printShipDetails(newShip);
 
 	newShip.name = Destroyer;
 	generateRandomValidShipPosition(newShip);
 	ships_.push_back(newShip);
 	placeShip(newShip, ships_.size() - 1);
-	printShipDetails(newShip);
+	//printShipDetails(newShip);
 }
 
 
