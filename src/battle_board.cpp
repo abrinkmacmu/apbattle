@@ -56,6 +56,11 @@ void bship::BattleBoard::setHit(int row, int col, HitStatus hs)
 	map_[row][col] = hs;
 }
 
+void bship::BattleBoard::setDeadCell(int row, int col)
+{
+	map_[row][col] = bship::SunkCell;
+}
+
 bool bship::BattleBoard::checkGameoverCondition()
 {
 	if(sunk_list_.size() >= 5 )
@@ -165,6 +170,9 @@ void bship::BattleBoard::updateHitMapGraphics()
 
 			case bship::Placed:
 				cellColor = sf::Color::Yellow;
+				break;
+			case bship::SunkCell:
+				cellColor = sf::Color::Black;
 				break;
 			}
 

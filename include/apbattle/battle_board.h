@@ -27,6 +27,8 @@ public:
 
 	void setHit(int row, int col, HitStatus hs);
 
+	void setDeadCell(int row, int col);
+
 	virtual void reset();
 
 	bool checkGameoverCondition();

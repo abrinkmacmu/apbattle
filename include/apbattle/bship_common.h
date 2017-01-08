@@ -14,7 +14,8 @@ enum HitStatus {
 	Unknown,
 	Hit,
 	Miss,
-	Placed
+	Placed,
+	SunkCell
 };
 
 const std::map<HitStatus, std::string> hitStatusLookup{

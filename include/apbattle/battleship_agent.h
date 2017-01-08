@@ -19,7 +19,8 @@ public:
 	 */
 	BattleshipAgent(
 	  std::string host, unsigned short port,
-	  std::string playerName, bool isHost);
+	  std::string playerName, bool isHost,
+	  bool enableLogging=false);
 
 	virtual ~BattleshipAgent() {};
 

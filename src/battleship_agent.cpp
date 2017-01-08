@@ -12,7 +12,9 @@
 
 bship::BattleshipAgent::BattleshipAgent(
   std::string host, unsigned short port,
-  std::string playerName, bool isHost):
+  std::string playerName, bool isHost,
+  bool enableLogging)
+	:
 	socketConnection_(host, port, isHost),
 	host_(host),
 	port_(port),
@@ -31,9 +33,9 @@ void bship::BattleshipAgent::playGame(bool goFirst)
 {
 	for (;;) {
 		std::cout << "Initiating new game!\n\n";
-		if(goFirst){
+		if (goFirst) {
 			initiateConnection();
-		}else{
+		} else {
 			respondToConnection();
 		}
 
@@ -106,7 +108,7 @@ void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 		parseResponseMsg(msg, hs, sn, gameover);
 
 		// print sunk ship for manual agents
-		if(sn != bship::None){ std::cout << "From Enemy: You have sunk my : " << shipNameLookup.at(sn) << "\n";}
+		if (sn != bship::None) { std::cout << "From Enemy: You have sunk my : " << shipNameLookup.at(sn) << "\n";}
 		//std::cout << "SOCKET READ: Response " << msg << "\n";
 
 		if (gameover) {
@@ -114,8 +116,11 @@ void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 			gameIsOver = true;
 			return;
 		}
-
-		enemyBoard.setHit(guessRowCol / 10, guessRowCol % 10, hs);
+		if (sn != bship::None) {
+			enemyBoard.setDeadCell(guessRowCol / 10, guessRowCol % 10);
+		} else {
+			enemyBoard.setHit(guessRowCol / 10, guessRowCol % 10, hs);
+		}
 		enemyBoard.updateWindow();
 
 	} else {
@@ -130,7 +135,7 @@ void bship::BattleshipAgent::defendPhase(bool& gameIsOver) {
 
 	std::string msg;
 	if (socketConnection_.read(msg)) {
-		
+
 		int guess;
 		parseGuessMsg(msg, guess);
 		//std::cout << "SOCKET READ: Guess " << msg << "\n";
@@ -141,7 +146,7 @@ void bship::BattleshipAgent::defendPhase(bool& gameIsOver) {
 		gameIsOver = playerBoard.checkGameoverCondition();
 		std::string resMsg = createResponseMsg(status, sunkShipName , gameIsOver); // todo gameover condition
 		socketConnection_.write(resMsg);
-		if(status == bship::Hit){
+		if (status == bship::Hit) {
 			std::cout << "Oh No, you it me at " << guess << "\n";
 		}
 		//std::cout << "SOCKET WRITE: Response " << resMsg << "\n";
