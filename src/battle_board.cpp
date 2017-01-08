@@ -164,7 +164,7 @@ void bship::BattleBoard::updateHitMapGraphics()
 				break;
 
 			case bship::Placed:
-				cellColor = sf::Color(150,150,150);
+				cellColor = sf::Color::Yellow;
 				break;
 			}
 
