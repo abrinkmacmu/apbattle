@@ -15,9 +15,9 @@ bool bship::PlayerBattleBoard::checkGridLocation(
   int row, int col, HitStatus& status, ShipName& shipName)
 {
 	shipName = bship::None;
-	if (map_[row][col] == Hit) {
+	if (map_[row][col] == Placed) {
 		status = Hit;
-
+		map_[row][col] = Hit;
 		int shipIndex = reverseIndexLookup_[(row * 10 + col)]; 
 		ships_[shipIndex].hits++;
 		if (checkIfSunk(ships_[shipIndex])) {
@@ -134,7 +134,7 @@ void bship::PlayerBattleBoard::placeShip(const Ship& ship, int shipIndex)
 	int y = ship.col;
 	for (int i = 0; i < shipLen; i++)
 	{
-		map_[x][y] = Hit;
+		map_[x][y] = Placed;
 		reverseIndexLookup_[x * 10 + y] = shipIndex;
 
 		if (ship.direction == Right) {
@@ -150,6 +150,10 @@ void bship::PlayerBattleBoard::placeShip(const Ship& ship, int shipIndex)
 bool bship::PlayerBattleBoard::checkIfSunk(Ship& ship)
 {
 
+	if(ship.isSunk){
+		std::cout << "Ship is already sunk!! Bad guess!\n";
+		return false;
+	}
 	int shipLen = shipLengthMap.at(ship.name);
 	if (shipLen <= ship.hits)
 	{

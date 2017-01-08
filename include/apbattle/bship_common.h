@@ -13,7 +13,8 @@ namespace bship {
 enum HitStatus {
 	Unknown,
 	Hit,
-	Miss
+	Miss,
+	Placed
 };
 
 const std::map<HitStatus, std::string> hitStatusLookup{
@@ -180,6 +181,7 @@ struct Ship {
 	int col;
 	Direction direction;
 	int hits = 0;
+	bool isSunk = false;
 
 	void setPos(int r, int c, Direction dir)
 	{

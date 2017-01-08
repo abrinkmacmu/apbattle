@@ -162,6 +162,10 @@ void bship::BattleBoard::updateHitMapGraphics()
 			case bship::Unknown:
 				cellColor = sf::Color::Blue;
 				break;
+
+			case bship::Placed:
+				cellColor = sf::Color(150,150,150);
+				break;
 			}
 
 			quad[0].color = sf::Color::Black; // hack so borders are more easily seen

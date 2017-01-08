@@ -49,11 +49,11 @@ void bship::BattleshipAgent::playGame(bool goFirst)
 			//std::cout << "In defend phase\n";
 			defendPhase(gameIsOver);
 			if (gameIsOver) { goFirst = true; break;}
-			usleep(1e4); // 4e6 usec = .01 sec
+			//usleep(1e4); // 4e6 usec = .01 sec
 			//std::cout << "In attack phase\n";
 			attackPhase(gameIsOver);
 			if (gameIsOver) { goFirst = false; break;}
-			usleep(1e5); // 4e6 usec = .01 sec
+			//usleep(1e5); // 4e6 usec = .01 sec
 		}
 	}
 }
@@ -168,7 +168,7 @@ void bship::BattleshipAgent::initiateConnection() {
 	bool reset_requested; bool ready_to_play;
 	parseConnectionMsg(newMsg, reset_requested, ready_to_play);
 	std::cout << "Connection successfully initiated\n";
-	usleep(1e6);
+	//usleep(1e6);
 
 }
 
@@ -183,7 +183,7 @@ void bship::BattleshipAgent::respondToConnection() {
 	socketConnection_.write(cMsg);
 
 	std::cout << "Connection successfully received\n";
-	usleep(1e6);
+	//usleep(1e6);
 }
 
 
