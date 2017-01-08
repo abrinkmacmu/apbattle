@@ -160,18 +160,18 @@ inline void parseResponseMsg(std::string msg, HitStatus& response, ShipName& sun
 
 	std::string res_string(document["response"].GetString());
 
-	if( 0 == res_string.compare("Hit!")){
+	if ( 0 == res_string.compare("Hit!")) {
 		response = Hit;
-	}else if( 0 == res_string.compare("Miss!")){
+	} else if ( 0 == res_string.compare("Miss!")) {
 		response = Miss;
-	}else{
+	} else {
 		std::cerr << "Error: Response:Response type unknown \n";
 	}
 
 	sunk = shipNameReverseLookup.at(document["sunk"].GetString());
 
 	gameover = document["gameover"].GetBool();
-	         
+
 };
 
 struct Ship {

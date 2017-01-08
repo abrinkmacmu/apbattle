@@ -35,7 +35,7 @@ void bship::SocketConnection::setupClientConnection()
 	std::cout << "A Client... attempting to connect to host\n";
 	int attempts = 0;
 	bool connected = false;
-	while (attempts < 10) {
+	while (attempts < 50) {
 
 		boost::system::error_code ec;
 		socket.connect(endpoint, ec);
@@ -70,17 +70,18 @@ bool bship::SocketConnection::read(std::string& read_buffer)
 			throw boost::system::system_error(error); // Some other error.
 			return false;
 		}
-		std::cout << "Buffdata " << buf.data() << "\n";
 
-		std::copy(buf.begin(), buf.begin()+len, std::back_inserter(accumulated));
+		// had some copy issues that this fixed
+		// bad unicode characters likely due to fixed-size buf array were 
+		// being copied into the json string
+		std::copy(buf.begin(), buf.begin() + len, std::back_inserter(accumulated));
 
-		std::cout << "before accu: " << accumulated << "\n";
 		auto first = accumulated.find('\n');
-		if( first != accumulated.npos){
+		if ( first != accumulated.npos) {
 			read_buffer = accumulated.substr(0, first);
-			accumulated.erase(accumulated.begin(), accumulated.begin()+first+1);
+			accumulated.erase(accumulated.begin(), accumulated.begin() + first + 1);
 
-			std::cout << "after accu: " << accumulated << "\n";
+
 
 			return true;
 		}

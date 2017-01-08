@@ -30,7 +30,7 @@ bship::BattleshipAgent::BattleshipAgent(
 void bship::BattleshipAgent::playGame(bool goFirst)
 {
 	for (;;) {
-
+		std::cout << "Initiating new game!\n\n";
 		if(goFirst){
 			initiateConnection();
 		}else{
@@ -40,20 +40,20 @@ void bship::BattleshipAgent::playGame(bool goFirst)
 		resetBoard();
 		bool gameIsOver = false;
 		if (goFirst) {
-			std::cout << "In attack phase\n";
+			//std::cout << "In attack phase\n";
 			attackPhase(gameIsOver);
 		}
 
 		while (!gameIsOver)
 		{
-			std::cout << "In defend phase\n";
+			//std::cout << "In defend phase\n";
 			defendPhase(gameIsOver);
 			if (gameIsOver) { goFirst = true; break;}
-			usleep(1e5);
-			std::cout << "In attack phase\n";
+			usleep(1e4); // 4e6 usec = .01 sec
+			//std::cout << "In attack phase\n";
 			attackPhase(gameIsOver);
 			if (gameIsOver) { goFirst = false; break;}
-			usleep(1e5);
+			usleep(1e5); // 4e6 usec = .01 sec
 		}
 	}
 }
@@ -72,18 +72,30 @@ void bship::BattleshipAgent::resetBoard()
 	log_file_name_ = std::string(ctime(&now));
 }
 
+int bship::BattleshipAgent::guessLocation()
+{
+	// default 'dumb' implementation
+	bool invalidGuess = true;
+	int guess = 0;
+	while (invalidGuess) {
+		guess = std::rand() % 100;
+		if (false == guess_list_[guess]) {
+			guess_list_[guess] = true;
+			invalidGuess = false;
+		}
+	}
+
+	return guess;
+}
+
 
 
 void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 
 	int guessRowCol = guessLocation();
-	//std::cout << "Attack guess: " << guessRowCol << "\n";
-
 	std::string gMsg = createGuessMsg(guessRowCol);
-	//std::cout << "created guess msg\n";
-
 	socketConnection_.write(gMsg);
-	std::cout << "SOCKET WRITE: Guess " << gMsg << "\n";
+	//std::cout << "SOCKET WRITE: Guess " << gMsg << "\n";
 
 	std::string msg;
 	if (socketConnection_.read(msg)) {
@@ -92,20 +104,23 @@ void bship::BattleshipAgent::attackPhase(bool& gameIsOver) {
 		ShipName sn;
 		bool gameover = false;
 		parseResponseMsg(msg, hs, sn, gameover);
-		std::cout << "SOCKET READ: Response " << msg << "\n";
+
+		// print sunk ship for manual agents
+		if(sn != bship::None){ std::cout << "From Enemy: You have sunk my : " << shipNameLookup.at(sn) << "\n";}
+		//std::cout << "SOCKET READ: Response " << msg << "\n";
+
 		if (gameover) {
+			std::cout << "GAMEOVER! you have WON!!!!\n\n";
 			gameIsOver = true;
 			return;
 		}
 
 		enemyBoard.setHit(guessRowCol / 10, guessRowCol % 10, hs);
 		enemyBoard.updateWindow();
-		//std::cout << "Updated graphics\n";
 
 	} else {
 		std::cerr << "Error: Socket Read error in Attack phase\n";
 	}
-	std::cout << "Ending attack phase\n\n";
 }
 
 
@@ -115,34 +130,32 @@ void bship::BattleshipAgent::defendPhase(bool& gameIsOver) {
 
 	std::string msg;
 	if (socketConnection_.read(msg)) {
+		
 		int guess;
-		std::cout << "defend guess msg: " << msg << "\n";
 		parseGuessMsg(msg, guess);
-		std::cout << "SOCKET READ: Guess " << msg << "\n";
-		HitStatus status;
-		ShipName sunkShipName;
-		//std::cout << "Defend guess: " << guess << ", " << guess / 10 << ", " << guess % 10 << "\n";
-		playerBoard.checkGridLocation(guess / 10, guess % 10, status, sunkShipName);
-		//std::cout << "Checked grid location\n";
-		//std::cout << "sunkShipName: " << sunkShipName << "\n";
+		//std::cout << "SOCKET READ: Guess " << msg << "\n";
 
+		HitStatus status;
+		ShipName sunkShipName;;
+		playerBoard.checkGridLocation(guess / 10, guess % 10, status, sunkShipName);
 		gameIsOver = playerBoard.checkGameoverCondition();
 		std::string resMsg = createResponseMsg(status, sunkShipName , gameIsOver); // todo gameover condition
-		
 		socketConnection_.write(resMsg);
-		std::cout << "SOCKET WRITE: Response " << resMsg << "\n";
+		if(status == bship::Hit){
+			std::cout << "Oh No, you it me at " << guess << "\n";
+		}
+		//std::cout << "SOCKET WRITE: Response " << resMsg << "\n";
+
 		if (gameIsOver) {
-			std::cout << "GAMEOVER!\n\n";
+			std::cout << "GAMEOVER! you have LOST :c\n\n";
 			return;
 		}
+
 		playerBoard.updateWindow();
-		//std::cout << "updating graphics\n";
 
 	} else {
 		std::cerr << "Error: Socket Read error in defend phase\n";
 	}
-
-	std::cout << "Ending defend phase\n\n";
 
 }
 
@@ -174,23 +187,6 @@ void bship::BattleshipAgent::respondToConnection() {
 }
 
 
-
-
-int bship::BattleshipAgent::guessLocation()
-{
-	// default 'dumb' implementation
-	bool invalidGuess = true;
-	int guess = 0;
-	while (invalidGuess) {
-		guess = std::rand() % 100;
-		if (false == guess_list_[guess]) {
-			guess_list_[guess] = true;
-			invalidGuess = false;
-		}
-	}
-
-	return guess;
-}
 
 void bship::BattleshipAgent::logAttackPhase(
   int my_guess, std::string enemy_response, std::string enemy_sunk)

@@ -11,33 +11,33 @@
 
 namespace bship {
 
-class BattleshipAgent{
+class BattleshipAgent {
 public:
 
 	/**
 	 * @brief spins up reading thread and allocates fields
 	 */
 	BattleshipAgent(
-		std::string host, unsigned short port,
-  std::string playerName, bool isHost);
+	  std::string host, unsigned short port,
+	  std::string playerName, bool isHost);
 
-	virtual ~BattleshipAgent(){};
+	virtual ~BattleshipAgent() {};
 
 	void playGame(bool goFirst);
 
-private:
+protected:
 
-	void resetBoard();
+	virtual void resetBoard();
+
+	virtual int guessLocation();
 
 	void attackPhase(bool& gameIsOver);
 
 	void defendPhase(bool& gameIsOver);
 
 	void initiateConnection();
-	
-	void respondToConnection();
 
-	virtual int guessLocation();
+	void respondToConnection();
 
 	void logAttackPhase(int my_guess, std::string enemy_response, std::string enemy_sunk);
 
@@ -45,9 +45,9 @@ private:
 
 	// TODO logShipConfiguration();
 
-	
+
 	std::string host_;
-	unsigned short port_;	
+	unsigned short port_;
 	SocketConnection socketConnection_;
 	std::string log_file_name_;
 	std::string log_file_path_;

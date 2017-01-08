@@ -4,9 +4,9 @@
 #include <apbattle/battle_board.h>
 
 
-namespace bship{
+namespace bship {
 
-class EnemyBattleBoard: public BattleBoard{
+class EnemyBattleBoard: public BattleBoard {
 
 public:
 

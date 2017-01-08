@@ -14,11 +14,10 @@ BattleBoard::BattleBoard(window_title)
 bool bship::PlayerBattleBoard::checkGridLocation(
   int row, int col, HitStatus& status, ShipName& shipName)
 {
-	std::cout << "row: " << row << " col: " << col << "  map_size: " << map_.size() << ", " << map_[0].size() << "\n";
 	shipName = bship::None;
 	if (map_[row][col] == Hit) {
 		status = Hit;
-		std::cout << "recombined: " << (row * 10 + col) << "\n";
+
 		int shipIndex = reverseIndexLookup_[(row * 10 + col)]; 
 		ships_[shipIndex].hits++;
 		if (checkIfSunk(ships_[shipIndex])) {
@@ -150,9 +149,7 @@ void bship::PlayerBattleBoard::placeShip(const Ship& ship, int shipIndex)
 
 bool bship::PlayerBattleBoard::checkIfSunk(Ship& ship)
 {
-	std::cout << "Checking...\n";
-	printShipDetails(ship);
-	std::cout << "  has " << ship.hits << " hits \n\n";
+
 	int shipLen = shipLengthMap.at(ship.name);
 	if (shipLen <= ship.hits)
 	{

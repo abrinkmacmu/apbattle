@@ -18,7 +18,7 @@ public:
 	 */
 	BattleBoard(std::string window_title);
 
-	virtual ~BattleBoard(){};
+	virtual ~BattleBoard() {};
 
 	/**
 	 * @brief checks if the ship position is valid in provided map
@@ -45,11 +45,11 @@ public:
 
 	void getMap(std::vector<std::vector<int>>& map) {map = map_;};
 
-	void setEnableGraphics(bool enable){ enableGraphics_ = enable;};
+	void setEnableGraphics(bool enable) { enableGraphics_ = enable;};
 
 	void consolePrintBoard();
 
-	
+
 
 protected:
 	std::vector<ShipName> sunk_list_;
@@ -63,8 +63,8 @@ protected:
 
 	void updateHitMapGraphics();
 
-	
-	
+
+
 
 
 }; // class

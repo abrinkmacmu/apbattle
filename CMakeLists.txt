@@ -21,6 +21,59 @@ include_directories(
 	"${PROJECT_SOURCE_DIR}/include"
 	)
 
+set(SOURCE_FILES 
+	src/manual_agent.cpp 
+	src/battleship_agent.cpp 
+	src/socket_connection.cpp
+	src/battle_board.cpp
+	src/player_battle_board.cpp
+	src/enemy_battle_board.cpp
+	)
+
+add_executable(run_random_agent
+	src/run_random_agent.cpp 
+	${SOURCE_FILES})
+target_link_libraries(run_random_agent 
+	${Boost_LIBRARIES} 
+	${CMAKE_THREAD_LIBS_INIT} 
+	${SFML_LIBRARIES} 
+	)
+
+add_executable(run_manual_agent
+  src/run_manual_agent.cpp 
+	${SOURCE_FILES})
+target_link_libraries(run_manual_agent 
+	${Boost_LIBRARIES} 
+	${CMAKE_THREAD_LIBS_INIT} 
+	${SFML_LIBRARIES} 
+	)
+
+
+########################
+### Doxygen autogen ####
+########################
+
+#find_package(Doxygen)
+#if(DOXYGEN_FOUND)
+#	configure_file(${PROJECT_SOURCE_DIR}/Doxyfile ${PROJECT_SOURCE_DIR}/Doxyfile @ONLY)
+#	add_custom_target(all
+#	${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
+#	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+#	COMMENT "Generating API documentation with Doxygen" VERBATIM
+#)
+#endif(DOXYGEN_FOUND)
+
+
+
+
+
+
+
+##########
+## Testing
+##########
+
+
 ##set(NOVEL_PRINTER_SOURCES 
 ## "${cpp_project_SRC_DIR}/novel_printer.cpp"
 ## "${cpp_project_INCLUDE_DIR}/novel_printer.h")
@@ -42,43 +95,18 @@ include_directories(
 #	${SFML_LIBRARIES} 
 #	)
 
-add_executable(test_msgs src/test/test_msgs.cpp)
+#add_executable(test_msgs src/test/test_msgs.cpp)
 
 
-add_executable(test_board
-	src/test/test_board.cpp 
-	src/battleship_agent.cpp 
-	src/socket_connection.cpp
-	src/battle_board.cpp
-	src/player_battle_board.cpp
-	src/enemy_battle_board.cpp)
-target_link_libraries(test_board
-	${Boost_LIBRARIES} 
-	${CMAKE_THREAD_LIBS_INIT} 
-	${SFML_LIBRARIES} 
-	)
-
-add_executable(test_agent 
-	src/test/test_agent.cpp 
-	src/battleship_agent.cpp 
-	src/socket_connection.cpp
-	src/battle_board.cpp
-	src/player_battle_board.cpp
-	src/enemy_battle_board.cpp)
-target_link_libraries(test_agent 
-	${Boost_LIBRARIES} 
-	${CMAKE_THREAD_LIBS_INIT} 
-	${SFML_LIBRARIES} 
-	)
-
-### Doxygen autogen ####
-
-#find_package(Doxygen)
-#if(DOXYGEN_FOUND)
-#	configure_file(${PROJECT_SOURCE_DIR}/Doxyfile ${PROJECT_SOURCE_DIR}/Doxyfile @ONLY)
-#	add_custom_target(all
-#	${DOXYGEN_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Doxyfile
-#	WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#	COMMENT "Generating API documentation with Doxygen" VERBATIM
-#)
-#endif(DOXYGEN_FOUND)
+# add_executable(test_board
+	# src/test/test_board.cpp 
+	# src/battleship_agent.cpp 
+	# src/socket_connection.cpp
+	# src/battle_board.cpp
+	# src/player_battle_board.cpp
+	# src/enemy_battle_board.cpp)
+# target_link_libraries(test_board
+	# ${Boost_LIBRARIES} 
+	# ${CMAKE_THREAD_LIBS_INIT} 
+	# ${SFML_LIBRARIES} 
+	# )
